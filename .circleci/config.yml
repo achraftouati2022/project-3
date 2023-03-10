@@ -31,8 +31,21 @@ version: 2.1
 #             #  Add revert code here. You can find this in the Getting Started section.
 #               exit 1
 #             fi
-            
+
 jobs:
+  notify:
+    docker:
+      - image: 'cimg/base:stable'
+        auth:
+          username: mydockerhub-user
+          password: $DOCKERHUB_PASSWORD  # context / project UI env-var reference
+    steps:
+- slack/notify:
+	  event: fail
+	  template: basic_fail_1
+- slack/notify:
+	  event: pass
+	  template: success_tagged_deploy_1  
   build-frontend:
     docker:
       - image: circleci/node:13.8.0
@@ -301,6 +314,10 @@ jobs:
             
 
 workflows:
+  send-notification:
+    jobs:
+      - notify:
+          context: slack-secrets
   default:
     jobs:
       - build-frontend
