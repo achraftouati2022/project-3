@@ -103,8 +103,9 @@ jobs:
           event: pass
           template: success_tagged_deploy_1
       - slack/notify:
-          event: fail
+          channel: project-3
           mentions: "@achraftouati2022"
+          event: fail
           template: basic_fail_1
           
   test-backend:
