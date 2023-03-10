@@ -108,10 +108,13 @@ jobs:
       # Checkout code from git
       - checkout
       # Restore from cache
+      - restore_cache:
+          keys: [frontend-build]
       - run:
           name: Scan Frontend
           command: |
             cd frontend
+            npm install
 
   scan-backend:
     docker:
@@ -120,10 +123,13 @@ jobs:
       # Checkout code from git
       - checkout
       # Restore from cache
+      - restore_cache:
+          keys: [backend-build]
       - run:
           name: Scan Backend
           command: |
             cd backend
+            npm install
 
 #   deploy-infrastructure:
 #     docker:
