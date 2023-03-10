@@ -56,7 +56,14 @@ jobs:
       - save_cache:
           paths: [frontend/node_modules]
           key: frontend-build
-
+      - slack/notify:
+          event: pass
+          template: success_tagged_deploy_1
+      - slack/notify:
+          event: fail
+          mentions: "@achraftouati2022"
+          template: basic_fail_1
+          
   build-backend:
     docker:
       - image: circleci/node:13.8.0
@@ -67,13 +74,20 @@ jobs:
       - run:
           name: Back-end build
           command: |
-             cd backend
+             cd frontend
              npm install
              npm run build
       - save_cache:
           paths: [backend/node_modules]
           key: backend-build
-
+      - slack/notify:
+          event: pass
+          template: success_tagged_deploy_1
+      - slack/notify:
+          event: fail
+          mentions: "@achraftouati2022"
+          template: basic_fail_1
+          
   test-frontend:
     docker:
       - image: circleci/node:13.8.0
@@ -90,7 +104,15 @@ jobs:
            cd frontend
            npm install
            npm run test
-                
+      - slack/notify:
+          event: pass
+          template: success_tagged_deploy_1
+      - slack/notify:
+          channel: project-3
+          mentions: "@achraftouati2022"
+          event: fail
+          template: basic_fail_1
+          
   test-backend:
     docker:
       - image: circleci/node:13.8.0
@@ -107,10 +129,16 @@ jobs:
            cd backend
            npm install
            npm run test
-            
+      - slack/notify:
+          event: pass
+          template: success_tagged_deploy_1
+      - slack/notify:
+          event: fail
+          mentions: "@achraftouati2022"
+          template: basic_fail_1
+          
   scan-frontend:
     docker:
-      # Docker image here
       - image: circleci/node:13.8.0
     steps:
       # Checkout code from git
@@ -124,9 +152,16 @@ jobs:
             cd frontend
             npm install
             npm audit fix --audit-level=critical
+      - slack/notify:
+          event: pass
+          template: success_tagged_deploy_1
+      - slack/notify:
+          event: fail
+          mentions: "@achraftouati2022"
+          template: basic_fail_1
+          
   scan-backend:
     docker:
-      # Docker image here
       - image: circleci/node:13.8.0
     steps:
       # Checkout code from git
@@ -140,13 +175,20 @@ jobs:
             cd backend
             npm install
             npm audit fix --audit-level=critical
+      - slack/notify:
+          event: pass
+          template: success_tagged_deploy_1
+      - slack/notify:
+          event: fail
+          mentions: "@achraftouati2022"
+          template: basic_fail_1
+
   deploy-infrastructure:
     docker:
       # Docker image here that supports AWS CLI
       - image: amazon/aws-cli
     steps:
       # Checkout code from git
-      - checkout
       # Install tar and gzip
       - run: yum install tar gzip -y
       - run:
@@ -156,7 +198,7 @@ jobs:
               --template-file .circleci/files/backend.yml \
               --tags project=udapeople \
               --stack-name "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
-              --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"  
+              --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"
       - run:
           name: Ensure front-end infrastructure exist
           command: |
@@ -165,7 +207,6 @@ jobs:
               --tags project=udapeople \
               --stack-name "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}" \
               --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"
-      # Fetch add append the public IP address of the EC2 instance to inventory.txt file
       - run:
           name: Add back-end ip to ansible inventory
           command: |
@@ -180,10 +221,17 @@ jobs:
             - project/.circleci/ansible/inventory.txt
       # Here's where you will add some code to rollback on failure
       - destroy-environment:
-          workflow_id: ${CIRCLE_WORKFLOW_ID:0:7} 
+          workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
+      - slack/notify:
+          event: pass
+          template: success_tagged_deploy_1
+      - slack/notify:
+          event: fail
+          mentions: "@achraftouati2022"
+          template: basic_fail_1
           
           
-        
+          
 #   configure-infrastructure:
 #     docker:
 #       # Docker image here that supports Ansible
