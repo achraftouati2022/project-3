@@ -214,6 +214,9 @@ jobs:
           root: ~/
           paths:
             - project/.circleci/ansible/inventory.txt
+      # Here's where you will add some code to rollback on failure
+      - destroy-environment:
+          workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
       - slack/notify:
           event: pass
           template: success_tagged_deploy_1
@@ -221,7 +224,7 @@ jobs:
           event: fail
           mentions: "@achraftouati2022"
           template: basic_fail_1
-      # Here's where you will add some code to rollback on failure      
+          
 
 #   configure-infrastructure:
 #     docker:
