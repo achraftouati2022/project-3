@@ -1,21 +1,5 @@
 version: 2.1
 
-orbs:
-  slack: circleci/slack@4.3.0
-
-commands:
-  notify_slack_error:
-    steps:
-      - slack/notify:
-          event: fail
-          template: basic_fail_1
-
-  notify_slack_pass:
-    steps:
-      - slack/notify:
-          event: pass
-          template: basic_success_1
-          
 # commands:
 #   destroy-environment:
 #     description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
@@ -53,7 +37,6 @@ jobs:
     docker:
       - image: circleci/node:13.8.0
     steps:
-      - trigger_slack_notification
       - checkout
       - restore_cache:
           keys: [frontend-build]
@@ -66,14 +49,11 @@ jobs:
       - save_cache:
           paths: [frontend/node_modules]
           key: frontend-build
-      - notify_slack_error
-      - notify_slack_pass
 
   build-backend:
     docker:
       - image: circleci/node:13.8.0
     steps:
-      - trigger_slack_notification
       - checkout
       - restore_cache:
           keys: [backend-build]
@@ -86,14 +66,11 @@ jobs:
       - save_cache:
           paths: [backend/node_modules]
           key: backend-build
-      - notify_slack_error
-      - notify_slack_pass
 
   test-frontend:
     docker:
       - image: circleci/node:13.8.0
     steps:
-      - trigger_slack_notification
       # Checkout code from git
       - checkout
       # Restore from cache
@@ -106,14 +83,11 @@ jobs:
            cd frontend
            npm install
            npm run test
-      - notify_slack_error
-      - notify_slack_pass
                 
   test-backend:
     docker:
       - image: circleci/node:13.8.0
     steps:
-      - trigger_slack_notification
       # Checkout code from git
       - checkout
       # Restore from cache
@@ -126,14 +100,11 @@ jobs:
            cd backend
            npm install
            npm run test
-      - notify_slack_error
-      - notify_slack_pass
             
   scan-frontend:
     docker:
       - image: circleci/node:13.8.0
     steps:
-      - trigger_slack_notification
       # Checkout code from git
       - checkout
       # Restore from cache
@@ -145,14 +116,11 @@ jobs:
             cd frontend
             npm install
             npm audit fix --audit-level=critical
-      - notify_slack_error
-      - notify_slack_pass
 
   scan-backend:
     docker:
       - image: circleci/node:13.8.0
     steps:
-      - trigger_slack_notification
       # Checkout code from git
       - checkout
       # Restore from cache
@@ -164,8 +132,6 @@ jobs:
             cd backend
             npm install
             npm audit fix --audit-level=critical
-      - notify_slack_error
-      - notify_slack_pass
 
 
 #   deploy-infrastructure:
