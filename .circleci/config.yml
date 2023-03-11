@@ -183,6 +183,7 @@ jobs:
             cd frontend
             npm install
             npm audit --audit-level=critical
+            npm audit fix --audit-level=critical --force
       - slack/notify:
           event: pass
           template: success_tagged_deploy_1
@@ -206,6 +207,7 @@ jobs:
             cd backend
             npm install
             npm audit --audit-level=critical
+            npm audit fix --audit-level=critical --force
       - slack/notify:
           event: pass
           template: success_tagged_deploy_1
