@@ -227,14 +227,15 @@ jobs:
           
   configure-infrastructure:
     docker:
+      # Docker image here that supports Ansible
       - image: python:3.10-alpine3.16
     steps:
       # Checkout code from git
       - checkout
       # Add ssh keys with fingerprint
       - add_ssh_keys:
-        fingerprints:
-            - "6b:fa:24:d7:f8:2d:95:c5:de:f4:0c:8a:5f:cd:53:fb"
+         fingerprints:
+            - "0c:48:84:3d:29:67:f8:7b:ff:85:c7:d1:37:9d:bc:08"
       # attach workspace
       - attach_workspace:
           at: ~/
@@ -250,7 +251,7 @@ jobs:
             ls -al
             ansible-playbook -i inventory.txt configure-server.yml
           no_output_timeout: 30m
-      # Here's where you will add some code to rollback on failure      
+      # Here's where you will add some code to rollback on failure
       - destroy-environment:
           workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
           
