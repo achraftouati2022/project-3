@@ -235,7 +235,7 @@ jobs:
       - checkout
       # Add ssh keys with fingerprint
       - add_ssh_keys:
-         fingerprints:
+          fingerprints:
             - "70:8b:ef:d5:43:f3:ca:fa:15:e3:03:82:39:fd:2a:49"
       # attach workspace
       - attach_workspace:
@@ -334,7 +334,7 @@ jobs:
       - checkout
       # Add ssh keys with fingerprint
       - add_ssh_keys:
-        fingerprints:
+          fingerprints:
             - "70:8b:ef:d5:43:f3:ca:fa:15:e3:03:82:39:fd:2a:49"
       # attach workspace
       - attach_workspace:
@@ -462,8 +462,8 @@ workflows:
           requires: [configure-infrastructure]
       - deploy-frontend:
           requires: [run-migrations]
-      # - deploy-backend:
-      #     requires: [run-migrations]
+      - deploy-backend:
+          requires: [run-migrations]
       # - smoke-test:
       #     requires: [deploy-backend, deploy-frontend]
       # - cloudfront-update:
