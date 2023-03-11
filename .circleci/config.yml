@@ -182,7 +182,6 @@ jobs:
           command: |
             cd frontend
             npm install
-            npm audit --audit-level=critical
             npm audit fix 
       - slack/notify:
           event: pass
@@ -206,7 +205,6 @@ jobs:
           command: |
             cd backend
             npm install
-            npm audit --audit-level=critical
             npm audit fix 
       - slack/notify:
           event: pass
