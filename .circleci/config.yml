@@ -229,15 +229,15 @@ jobs:
             cd .circleci/ansible
             cat inventory.txt
             aws ec2 describe-instances \
-            --query 'Reservations[*].Instances[*].PublicIpAddress' \
-            --output text --filter Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7} >> inventory.txt
+            --query "Reservations[*].Instances[*].PublicIpAddress" \
+            --output text --filter "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" >> inventory.txt
             cat inventory.txt
       - persist_to_workspace:
           root: ~/
           paths:
             - project/.circleci/ansible/inventory.txt
       # Here's where you will add some code to rollback on failure
-          
+      - destroy-environment
           
   configure-infrastructure:
     docker:
@@ -306,8 +306,8 @@ jobs:
           name: Get backend url
           command: |
                 export BACKEND_IP=$(aws ec2 describe-instances \
-                --query 'Reservations[*].Instances[*].PublicIpAddress' \
-                --filter Name=tag:Name,Values=backend-${CRICLE_WORKFLOW_ID:0:7} \
+                --query "Reservations[*].Instances[*].PublicIpAddress" \
+                --filter "Name=tag:Name,Values=backend-${CRICLE_WORKFLOW_ID:0:7}" \
                 --output text
                 )
                 export API_URL="http://${BACKEND_IP}:3030"
@@ -381,7 +381,10 @@ jobs:
       - run:
           name: backend smoke test
           command: |
-            BACKEND_IP=$(aws ec2 describe-instances --query 'Reservations[*].Instances[*].PublicIpAddress' --output text)
+            BACKEND_IP=$(aws ec2 describe-instances \ 
+            --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" \
+            --query "Reservations[*].Instances[*].PublicIpAddress" \
+            --output text)
              API_URL="http://${BACKEND_IP}:3030"
              echo ${API_URL}
              curl ${API_URL}/api/status
@@ -416,7 +419,7 @@ jobs:
             list-exports --query "Exports[?Name==\'WorkflowID\'].Value" \
             --no-paginate --output text)
             echo "Old Wokflow ID: $OLD_WORKFLOW_ID"
-            curl https://kvdb.io/GxSSJoVqCBXMWLqX1KkcJq/old_workflow_id -d  "${OLD_WORKFLOW_ID}"
+            curl https://kvdb.io/QUspWMWvR5df9K9Lb4DW9J/old_workflow_id -d "${OLD_WORKFLOW_ID}"
       - run:
           name: Update cloudfront distribution
           command: |
@@ -446,7 +449,7 @@ jobs:
                 --stack-status-filter CREATE_COMPLETE --no-paginate --output text))
             echo Stack names: "${STACKS[@]}"
 
-            export OldWorkflowID=$(curl --insecure https://kvdb.io/${KVDB_BUCKET}/old_workflow_id)
+            export OldWorkflowID=$(curl --insecure https://kvdb.io/QUspWMWvR5df9K9Lb4DW9J/old_workflow_id)
             echo Old Workflow ID: $OldWorkflowID
 
             if [[ "${STACKS[@]}" =~ "${OldWorkflowID}" ]]
