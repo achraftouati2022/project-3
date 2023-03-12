@@ -330,7 +330,7 @@ jobs:
       - revert-migrations
       
   deploy-backend:
-   docker:
+    docker:
       # Docker image here that supports Ansible
       - image: cimg/base:stable
     steps:
