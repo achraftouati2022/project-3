@@ -381,7 +381,7 @@ jobs:
       - run:
           name: backend smoke test
           command: |
-            BACKEND_IP=$(aws ec2 describe-instances --query "Reservations[*].Instances[*].PublicIpAddress" --output text)
+            BACKEND_IP=$(aws ec2 describe-instances --query 'Reservations[*].Instances[*].PublicIpAddress' --output text)
             API_URL="http://${BACKEND_IP}:3030"
             echo ${API_URL}
             curl ${API_URL}/api/status
@@ -441,14 +441,10 @@ jobs:
       - run:
           name: Remove old stacks and files
           command: |
-            export STACKS=($(aws cloudformation list-stacks \
-                --query "StackSummaries[*].StackName" \
-                --stack-status-filter CREATE_COMPLETE --no-paginate --output text))
-            echo Stack names: "${STACKS[@]}"
-
+            export STACKS=($(aws cloudformation list-stacks --query "StackSummaries[*].StackName" --stack-status-filter CREATE_COMPLETE --no-paginate --output text))
             export OldWorkflowID=$(curl --insecure https://kvdb.io/FJrbgWktYMFJKe3okAUNZ/old_workflow_id)
             echo Old Workflow ID: $OldWorkflowID
-
+            echo Stack names: "${STACKS[@]}"
             if [[ "${STACKS[@]}" =~ "${OldWorkflowID}" ]]
             then
               aws s3 rm "s3://udapeople-${OldWorkflowID}" --recursive
