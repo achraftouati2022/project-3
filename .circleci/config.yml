@@ -122,6 +122,7 @@ jobs:
             npm install
             npm audit fix --audit-level=critical
             
+            
   scan-backend:
     docker:
       # Docker image here
@@ -139,6 +140,7 @@ jobs:
             npm install
             npm audit fix --audit-level=critical
             
+
   deploy-infrastructure:
     docker:
       # Docker image here that supports AWS CLI
