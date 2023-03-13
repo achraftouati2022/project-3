@@ -120,12 +120,8 @@ jobs:
           command: |
             cd frontend
             npm install
-            npm audit fix --force
-             npm audit fix
-             npm install --save-dev html-webpack-plugin@5.5.0
-             npm update js-yaml --depth 4
-             npm audit fix --audit-level=critical --force
-             npm audit --audit-level=critical
+            npm audit fix --audit-level=critical
+            
   scan-backend:
     docker:
       # Docker image here
@@ -141,12 +137,8 @@ jobs:
           command: |
             cd backend
             npm install
-            npm audit fix --force
-             npm audit fix
-             npm install --save-dev html-webpack-plugin@5.5.0
-             npm update js-yaml --depth 4
-             npm audit fix --audit-level=critical --force
-             npm audit --audit-level=critical
+            npm audit fix --audit-level=critical
+            
   deploy-infrastructure:
     docker:
       # Docker image here that supports AWS CLI
