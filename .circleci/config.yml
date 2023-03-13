@@ -120,7 +120,7 @@ jobs:
           command: |
             cd frontend
             npm install
-            npm audit fix --audit-level=critical
+            npm audit fix 
   scan-backend:
     docker:
       # Docker image here
@@ -136,7 +136,7 @@ jobs:
           command: |
             cd backend
             npm install
-            npm audit fix --audit-level=critical
+            npm audit fix 
   deploy-infrastructure:
     docker:
       # Docker image here that supports AWS CLI
